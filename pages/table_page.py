@@ -1,18 +1,34 @@
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 
-class TableElement:
-
+class TablePage:
     def __init__(self, driver, locator):
         self.driver = driver
         self.locator = locator
 
+        # Использование Fluent Wait:
+        self.wait = WebDriverWait(
+            driver,
+            timeout=10,
+            poll_frequency=0.3,
+            ignored_exceptions=[NoSuchElementException]
+        )
+
     @property
     def element(self):
-        return self.driver.find_element(*self.locator)
+
+        # Explicit Wait + expected_conditions
+        return self.wait.until(EC.visibility_of_element_located(
+            self.locator))
 
     def is_displayed(self):
-        return self.element.is_displayed()
+
+        # Explicit Wait + expected_conditions
+        return self.wait.until(EC.visibility_of_element_located(
+            self.locator)).is_displayed()
 
     def get_headers(self) -> list[str]:
         """Возвращает список заголовков таблицы."""
@@ -33,6 +49,13 @@ class TableElement:
     def get_rows_count(self) -> int:
         rows = self.element.find_elements(By.CSS_SELECTOR, "tbody tr")
         return len(rows)
+
+    # Использование execute_script:
+    def get_rows_count_via_js(self):
+        return self.driver.execute_script("""
+            return arguments[0]
+                .querySelectorAll("tbody tr").length;
+        """, self.element)
 
     def get_columns_count(self) -> int:
         columns = self.element.find_elements(By.CSS_SELECTOR, "thead th")
