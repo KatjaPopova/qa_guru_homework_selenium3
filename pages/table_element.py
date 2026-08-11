@@ -1,11 +1,20 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class TableElement:
 
-    def __init__(self, driver, locator):
+    def __init__(self, driver, locator, timeout=5):
         self.driver = driver
         self.locator = locator
+        self.timeout = timeout
+
+    def wait_visible(self):
+        WebDriverWait(self.driver, self.timeout).until(
+            EC.visibility_of_element_located(self.locator)
+        )
+        return self
 
     @property
     def element(self):

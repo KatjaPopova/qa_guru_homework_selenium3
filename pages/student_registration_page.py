@@ -3,12 +3,11 @@ import os
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class StudentRegistrationPage:
-
     # =========================
     # ЛОКАТОРЫ
     # =========================
@@ -32,14 +31,12 @@ class StudentRegistrationPage:
     MODAL_TITLE = (By.ID, "example-modal-sizes-title-lg")
     RESULT_TABLE = (By.CLASS_NAME, "table-responsive")
 
-
     # =========================
     # ИНИЦИАЛИЗАЦИЯ
     # =========================
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(driver, 5)
-
 
     # =========================
     # ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
@@ -62,7 +59,6 @@ class StudentRegistrationPage:
             pass
 
         return self
-
 
     def submit(self):
         submit_button = self.wait.until(EC.element_to_be_clickable(self.SUBMIT))
@@ -103,7 +99,8 @@ class StudentRegistrationPage:
         year_dropdown.find_element(By.XPATH, f".//option[@value='{year}']").click()
 
         # Выбираем день
-        self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, f".react-datepicker__day--{day}:not(.react-datepicker__day--outside-month)"))).click()
+        self.wait.until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, f".react-datepicker__day--{day}:not(.react-datepicker__day--outside-month)"))).click()
 
     def enter_subject(self, subject):
         subject_input = self.wait.until(EC.element_to_be_clickable(self.SUBJECTS_INPUT))
@@ -147,7 +144,6 @@ class StudentRegistrationPage:
         self.select_gender(gender)
         self.enter_phone(phone)
 
-
     # -------------------------
     # ВСПОМОГАТЕЛЬНЫЕ ПРОВЕРКИ
     # -------------------------
@@ -158,7 +154,6 @@ class StudentRegistrationPage:
         )
         assert modal.text == "Thanks for submitting the form"
 
-
     def is_success_modal_opened(self) -> bool:
         try:
             self.wait.until(EC.visibility_of_element_located(self.MODAL_TITLE))
@@ -167,8 +162,6 @@ class StudentRegistrationPage:
         except TimeoutException:
             return False
 
-
     def check_user_in_table(self, text):
         table = self.driver.find_element(*self.RESULT_TABLE)
         assert text in table.text
-

@@ -1,15 +1,21 @@
 import pytest
-from selenium.common import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from pages.table_element import TableElement
-from pages.table_page import TablePage
+from pages.tables_page import TablesPage
 
 
 @pytest.fixture()
 def tables_page(driver):
-    page = TablePage(driver)
+    page = TablesPage(driver)
     page.open()
+
+    page.table1.wait_visible()
+    page.table2.wait_visible()
+
     return page
 
 
@@ -56,8 +62,17 @@ def test_all_emails_contain_mail_symbol_table1(tables_page):
     assert all("@" in email for email in emails)
 
 
-# 6. Пользователь Bach присутствует в таблице 1:
-def test_user_bach_exists_table1(tables_page):
+# 6. Пользователь Bach присутствует в таблице 1 (Fluent Wait):
+def test_fluent_wait_user_bach_exists_table1(tables_page):
+    wait = WebDriverWait(
+        tables_page.driver,
+        timeout=5,
+        poll_frequency=0.2,
+        ignored_exceptions=(NoSuchElementException, StaleElementReferenceException),
+    )
+
+    wait.until(EC.text_to_be_present_in_element(tables_page.table1.locator, "Bach"))
+
     assert tables_page.table1.user_exists("Bach"), "Пользователь не найден"
 
 

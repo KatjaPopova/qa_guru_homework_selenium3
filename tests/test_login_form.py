@@ -1,4 +1,5 @@
 import pytest
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -88,3 +89,18 @@ def test_xss_injection_in_login_field(login_page):
 
     with pytest.raises(TimeoutException):
         WebDriverWait(login_page.driver, 3).until(EC.alert_is_present())
+
+
+# 9. Ошибка при авторизации с ожиданием Fluent Wait:
+def test_fluent_wait_error_message(login_page):
+    login_page.perform_login("Ekaterina", "invalid")
+
+    wait = WebDriverWait(
+        login_page.driver,
+        timeout=6,
+        poll_frequency=0.2,  # Fluent Wait: частота опроса
+        ignored_exceptions=(NoSuchElementException, StaleElementReferenceException)  # Fluent: игнор исключений
+    )
+
+    error = wait.until(EC.visibility_of_element_located(login_page.ERROR_MESSAGE))
+    assert error.text == "Wrong login or password"
