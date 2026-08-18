@@ -4,7 +4,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 class TextBoxPage:
-    URL = "https://qa-guru.github.io/one-page-form/text-box.html"
+    URL = "https://demo.qa.guru/one-page-form/text-box.html"
 
     USER_NAME = (By.ID, "userName")
     USER_EMAIL = (By.ID, "userEmail")

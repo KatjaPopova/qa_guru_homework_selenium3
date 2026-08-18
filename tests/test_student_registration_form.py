@@ -11,8 +11,8 @@ from pages.student_registration_page import StudentRegistrationPage
 
 # 1. Проверяем, что форма отправляется с обязательными полями:
 def test_successful_submit_with_required_fields(driver):
-    page = StudentRegistrationPage(driver).open_and_prepare()
-
+    page = StudentRegistrationPage(driver)
+    page.open_and_prepare()
     page.fill_required_fields("Петр", "Петров", gender=1, phone="8900000000")
     page.submit()
 
@@ -23,8 +23,8 @@ def test_successful_submit_with_required_fields(driver):
 
 # 2. Проверяем отправку формы, где выбраны все доступные Subjects:
 def test_positive_select_all_subjects(driver):
-    page = StudentRegistrationPage(driver).open_and_prepare()
-
+    page = StudentRegistrationPage(driver)
+    page.open_and_prepare()
     page.fill_required_fields("Ivan", "Petrov", gender=1, phone="9998887766")
 
     page.enter_subject("Maths")
@@ -57,8 +57,8 @@ def test_positive_select_all_subjects(driver):
 
 # 3. Проверяем отправку формы, где выбраны все доступные Hobbies:
 def test_positive_select_all_hobbies(driver):
-    page = StudentRegistrationPage(driver).open_and_prepare()
-
+    page = StudentRegistrationPage(driver)
+    page.open_and_prepare()
     page.fill_required_fields("Anna", "Ivanova", gender=2, phone="1112223344")
 
     page.select_hobby(1)
@@ -75,8 +75,8 @@ def test_positive_select_all_hobbies(driver):
 
 # 4. После отправки формы ждём, пока в таблице результата появится текст "Sports" (Fluent Wait)
 def test_fluent_wait_result_table_has_text(driver):
-    page = StudentRegistrationPage(driver).open_and_prepare()
-
+    page = StudentRegistrationPage(driver)
+    page.open_and_prepare()
     page.fill_required_fields("Anna", "Ivanova", gender=2, phone="1112223344")
     page.select_hobby(1)  # Sports
     page.submit()

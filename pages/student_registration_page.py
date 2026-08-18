@@ -5,6 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+import logging
+logger = logging.getLogger(__name__)
+
 
 
 class StudentRegistrationPage:
@@ -12,7 +15,7 @@ class StudentRegistrationPage:
     # ЛОКАТОРЫ
     # =========================
 
-    URL = "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
+    URL = "https://demo.qa.guru/one-page-form/automation-practice-form.html"
 
     FIRST_NAME = (By.ID, "firstName")
     LAST_NAME = (By.ID, "lastName")
@@ -43,22 +46,27 @@ class StudentRegistrationPage:
     # =========================
     def open(self):
         self.driver.get(self.URL)
+        return self
 
-    def close_banner(self):
-        close_btn = self.wait.until(
-            EC.element_to_be_clickable(self.CLOSE_BANNER)
-        )
-        close_btn.click()
-        self.wait.until(EC.invisibility_of_element(close_btn))
+    def _close_commercial_banner(self):
+        removed = self.driver.execute_script("""
+            let removedCount = 0;
+
+            const fixedban = document.getElementById('fixedban');
+            if (fixedban) { fixedban.remove(); removedCount++; }
+
+            const footer = document.querySelector('footer');
+            if (footer) { footer.remove(); removedCount++; }
+
+            return removedCount;
+        """)
+        logger.info("Removed %s blocking elements (fixedban/footer)", removed)
 
     def open_and_prepare(self):
+        logger.info("Opening %s and preparing page", self.URL)
         self.open()
-        try:
-            self.close_banner()
-        except TimeoutException:
-            pass
+        self._close_commercial_banner()
 
-        return self
 
     def submit(self):
         submit_button = self.wait.until(EC.element_to_be_clickable(self.SUBMIT))

@@ -4,7 +4,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 class LoginPage:
-    URL = "https://qa-guru.github.io/one-page-form/login.html"
+    URL = "https://demo.qa.guru/one-page-form/login.html"
 
     LOGIN_INPUT = (By.CSS_SELECTOR, "[data-testid='login-input']")
     PASSWORD_INPUT = (By.CSS_SELECTOR, "[data-testid='password-input']")
